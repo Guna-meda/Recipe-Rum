@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { setUser, clearUser } from "./redux/features/authSlice";
 import { useEffect } from "react";
 import { doc,  getDoc } from "firebase/firestore";
+import { db } from './firebase/firebase';
 
 
 const App = () => {
