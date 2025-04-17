@@ -1,10 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
-import sampleRecipes from './sampleRecipes';
+import React, { useState, useRef, useEffect } from "react";
+import sampleRecipes from "./sampleRecipes";
+import { useDispatch, useSelector } from "react-redux";
+import { addToFavo, removeFavo } from "../redux/features/favSlice";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const [ingredient, setIngredient] = useState('');
+  const navigate = useNavigate();
+
+  const [ingredient, setIngredient] = useState("");
   const [ingredients, setIngredients] = useState([]);
-  const [country, setCountry] = useState('IN');
+  const [country, setCountry] = useState("IN");
   const [recipes, setRecipes] = useState([]);
   const inputRef = useRef(null);
 
@@ -15,7 +20,7 @@ const Home = () => {
   const addItem = () => {
     if (ingredient.trim()) {
       setIngredients((prev) => [...prev, ingredient.trim()]);
-      setIngredient('');
+      setIngredient("");
       inputRef.current.focus();
     }
   };
@@ -27,14 +32,40 @@ const Home = () => {
   const handleSearch = () => {
     if (ingredients.length === 0) return;
     setRecipes(sampleRecipes);
-    console.log('ingredients:', ingredients, 'from:', country);
+    console.log("ingredients:", ingredients, "from:", country);
     inputRef.current.focus();
   };
 
   const pressHandle = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       addItem();
     }
+  };
+
+  const dispatch = useDispatch();
+  const favorites = useSelector((state) => state.favorites);
+  const user = useSelector((state) => state.auth.user);
+
+  const toggleFav = (recipe) => {
+    if (!user) {
+      alert("Please login to save your favorite recipes.");
+      return;
+    }
+  
+    const isFav = favorites.some((fav) => fav.id === recipe.id);
+    if (isFav) {
+      dispatch(removeFavo(recipe));
+    } else {
+      dispatch(addToFavo(recipe));
+    }
+  };
+
+  const isFav = (recipe) => {
+    return favorites.some((fav) => fav.id === recipe.id);
+  };
+
+  const openRecipe = (recipe) => {
+    navigate(`/recipe/${recipe.id}`, { state: { recipe } });
   };
 
   return (
@@ -66,7 +97,10 @@ const Home = () => {
             className="bg-green-100 text-green-800 px-3 py-1 rounded-full flex items-center gap-2 text-sm"
           >
             {item}
-            <button onClick={() => removeItem(item)} className="text-green-500 hover:text-red-500">
+            <button
+              onClick={() => removeItem(item)}
+              className="text-green-500 hover:text-red-500"
+            >
               ✕
             </button>
           </span>
@@ -74,7 +108,9 @@ const Home = () => {
       </div>
 
       <div className="mb-4">
-        <label className="block mb-1 font-medium">Choose a cuisine region:</label>
+        <label className="block mb-1 font-medium">
+          Choose a cuisine region:
+        </label>
         <select
           value={country}
           onChange={(e) => setCountry(e.target.value)}
@@ -97,29 +133,48 @@ const Home = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {recipes.length > 0 ? (
           recipes.map((recipe, i) => (
-            <div key={i} className="border rounded-lg shadow hover:shadow-md transition p-4">
+            <div
+              key={i}
+              onClick={() => openRecipe(recipe)}
+              className="border rounded-lg shadow hover:shadow-md transition p-4 relative"
+            >
               <img
                 src={recipe.image}
                 alt={recipe.title}
                 className="w-full h-40 object-cover rounded mb-3"
               />
-              <h2 className="font-bold text-xl mb-2">{recipe.title}</h2>
+              <h2 className="font-bold text-xl mb-2 flex justify-between items-center">
+                {recipe.title}
+                <button
+                   onClick={(e) => {
+                    e.stopPropagation(); 
+                    toggleFav(recipe);
+                  }}
+                  className="text-xl hover:scale-110 transition"
+                >
+                  {isFav(recipe) ? "❤️" : "🤍"}
+                </button>
+              </h2>
 
               {recipe.usedIngredients.length > 0 && (
                 <p className="text-sm text-green-700 mb-1">
-                  ✅ Used: {recipe.usedIngredients.map((i) => i.name).join(', ')}
+                  ✅ Used:{" "}
+                  {recipe.usedIngredients.map((i) => i.name).join(", ")}
                 </p>
               )}
 
               {recipe.missedIngredients.length > 0 && (
                 <p className="text-sm text-red-600">
-                  ❌ Missing: {recipe.missedIngredients.map((i) => i.name).join(', ')}
+                  ❌ Missing:{" "}
+                  {recipe.missedIngredients.map((i) => i.name).join(", ")}
                 </p>
               )}
             </div>
           ))
         ) : (
-          <p className="text-gray-500 col-span-2 text-center">No recipes yet! 👀</p>
+          <p className="text-gray-500 col-span-2 text-center">
+            No recipes yet! 👀
+          </p>
         )}
       </div>
     </div>

@@ -23,7 +23,7 @@ const Profile = () => {
         name: user.displayName,
         email: user.email,
         photo: user.photoURL,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
       });
     }
 

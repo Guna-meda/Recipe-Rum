@@ -11,6 +11,7 @@ import { setUser, clearUser } from "./redux/features/authSlice";
 import { useEffect } from "react";
 import { doc,  getDoc } from "firebase/firestore";
 import { db } from './firebase/firebase';
+import RecipeDetail from './pages/RecipeDetail';
 
 
 const App = () => {
@@ -47,13 +48,14 @@ const App = () => {
   }, []);
 
   return (
-    <div className="flex">
+    <div className="flex h-screen overflow-hidden">
       <Sidebar />
-      <div className="flex-grow p-4">
+      <div className="flex-grow overflow-y-auto p-4">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/saved" element={<Saved />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/recipe/:id" element={<RecipeDetail />} />
         </Routes>
       </div>
     </div>
