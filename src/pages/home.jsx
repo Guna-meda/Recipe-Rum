@@ -146,7 +146,6 @@ const Home = () => {
       </select>
     </div>
   
-    {/* Find Recipes Button */}
     <div className="text-center mb-10">
       <button
         onClick={handleSearch}
