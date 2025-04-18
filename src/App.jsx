@@ -9,10 +9,9 @@ import { auth } from "./firebase/firebase";
 import { useDispatch } from "react-redux";
 import { setUser, clearUser } from "./redux/features/authSlice";
 import { useEffect } from "react";
-import { doc,  getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from './firebase/firebase';
 import RecipeDetail from './pages/RecipeDetail';
-
 
 const App = () => {
 
@@ -38,7 +37,6 @@ const App = () => {
         } catch(error) {
           console.log("Error in getting data:" , error);
         }
-       
       } else {
         dispatch(clearUser());
       }
@@ -48,9 +46,9 @@ const App = () => {
   }, []);
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden">
       <Sidebar />
-      <div className="flex-grow overflow-y-auto p-4">
+      <div className="flex-grow p-4 md:p-6 overflow-y-auto">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/saved" element={<Saved />} />

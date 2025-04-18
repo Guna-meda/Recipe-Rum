@@ -78,20 +78,6 @@ const Saved = () => {
                   {isFav(recipe) ? "❤️" : "🤍"}
                 </button>
               </h2>
-
-              {recipe.usedIngredients.length > 0 && (
-                <p className="text-sm text-green-700 mb-1">
-                  ✅ Used:{" "}
-                  {recipe.usedIngredients.map((i) => i.name).join(", ")}
-                </p>
-              )}
-
-              {recipe.missedIngredients.length > 0 && (
-                <p className="text-sm text-red-600">
-                  ❌ Missing:{" "}
-                  {recipe.missedIngredients.map((i) => i.name).join(", ")}
-                </p>
-              )}
             </div>
           ))}
         </div>

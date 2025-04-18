@@ -22,7 +22,7 @@ const Sidebar = () => {
 
       <div
         className={`
-          fixed top-0 left-0 h-screen w-20 bg-white shadow-xl z-50
+          fixed top-0 left-0 h-full w-20 bg-white shadow-xl z-50 
           transform transition-transform duration-300 ease-in-out
           ${open ? 'translate-x-0' : '-translate-x-full'} 
           md:translate-x-0 md:static md:block
@@ -38,17 +38,17 @@ const Sidebar = () => {
             </div>
 
             <ChefHat className="w-10 h-10 text-red-500" />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 w-full">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
                   to={item.path}
                   className={`
-                    p-2 rounded-lg 
+                    p-3 rounded-lg text-center 
                     ${pathname === item.path ? 'bg-gray-300' : 'hover:bg-gray-200'} 
-                    transition-colors
+                    transition-colors w-full
                   `}
-                  onClick={() => setOpen(false)} 
+                  onClick={() => setOpen(false)}
                 >
                   {item.icon}
                 </Link>
@@ -60,11 +60,11 @@ const Sidebar = () => {
             <Link
               to="/profile"
               className={`
-                p-2 rounded-lg 
-                ${pathname === '/account' ? 'bg-gray-300' : 'hover:bg-gray-200'} 
+                p-3 rounded-lg text-center 
+                ${pathname === '/profile' ? 'bg-gray-300' : 'hover:bg-gray-200'} 
                 transition-colors
               `}
-              onClick={() => setOpen(false)} 
+              onClick={() => setOpen(false)}
             >
               <CircleUserRound />
             </Link>
