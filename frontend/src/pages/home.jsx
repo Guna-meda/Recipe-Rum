@@ -31,6 +31,11 @@ const Home = () => {
   const handleSearch = async () => {
     if (ingredients.length === 0) return;
 
+    if (ingredients.length < 2) {
+      alert("Please enter at least two ingredients.");
+      return;
+    }
+
     const cuisineMap = {
       US: "American",
       IN: "Indian",
