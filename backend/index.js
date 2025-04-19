@@ -1,13 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const fetch = require('node-fetch'); // ✅ Import fetch
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
-
 
 app.get('/api/recipes', async (req, res) => {
   const { cuisine, ingredients } = req.query;
@@ -27,7 +27,6 @@ app.get('/api/recipes', async (req, res) => {
     res.status(500).json({ message: 'Error fetching from Spoonacular' });
   }
 });
-
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
