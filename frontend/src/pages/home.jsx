@@ -40,7 +40,7 @@ const Home = () => {
 
     const cuisine = cuisineMap[country];
 
-    const url = `http://localhost:5000/api/recipes?cuisine=${cuisine}&ingredients=${ingredients.join(
+    const url = `https://recipe-rum.onrender.com/api/recipes?cuisine=${cuisine}&ingredients=${ingredients.join(
       ","
     )}`;
 
