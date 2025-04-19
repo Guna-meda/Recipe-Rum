@@ -30,33 +30,29 @@ const Home = () => {
 
   const handleSearch = async () => {
     if (ingredients.length === 0) return;
-
+  
     const cuisineMap = {
       US: "American",
       IN: "Indian",
       IT: "Italian",
       CN: "Chinese",
     };
-
+  
     const cuisine = cuisineMap[country];
-
-    const apiKey = import.meta.env.VITE_SPOONACULAR_API_KEY;
-
-    const url = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&cuisine=${cuisine}&includeIngredients=${ingredients.join(
-      ","
-    )}&number=10&addRecipeInformation=true`;
-
+  
+    const url = `http://localhost:5000/api/recipes?cuisine=${cuisine}&ingredients=${ingredients.join(",")}`;
+  
     try {
       const res = await fetch(url);
       const data = await res.json();
       setRecipes(data.results);
-      console.log("Fetched recipes:", data.results);
     } catch (error) {
       console.error("Error fetching recipes:", error);
     }
+  
     inputRef.current.focus();
   };
-
+  
   const pressHandle = (e) => {
     if (e.key === "Enter") {
       addItem();
