@@ -10,7 +10,7 @@ import {
   setDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { db ,firebaseConfig} from "./firebase";
 import { setFavorites } from "../redux/features/favSlice";
 import { clearUser, setUser } from "../redux/features/authSlice";
 import { auth, provider } from "./firebase";
