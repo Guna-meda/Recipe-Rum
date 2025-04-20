@@ -37,6 +37,9 @@ const getFav = async (userId, dispatch) => {
 //! Login
 
 const login = async (dispatch) => {
+  console.log("Firebase AuthDomain:", firebaseConfig.authDomain);
+console.log("Redirecting to:", window.location.origin);
+
   const result = await signInWithPopup(auth, provider);
   const user = result.user;
 
