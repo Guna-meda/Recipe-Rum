@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToFavo, removeFavo } from "../redux/features/favSlice";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 
 const Saved = () => {
   const user = useSelector((state) => state.auth.user);
@@ -10,17 +12,33 @@ const Saved = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const updateFav = async (userId, favorites) => {
+    const favDoc = doc(db, "users", userId, "favorites", "list");
+    await updateDoc(favDoc, {
+      favorites: favorites,
+    });
+  };
+
   const openRecipe = (recipe) => {
     navigate(`/recipe/${recipe.id}`, { state: { recipe } });
   };
 
-  const toggleFav = (recipe) => {
+  const toggleFav = async (recipe) => {
     if (!user) {
       alert("Please login to save your favorite recipes.");
       return;
     }
 
+    let updatedFavorites;
     const isFav = favorites.some((fav) => fav.id === recipe.id);
+    if (isFav) {
+      updatedFavorites = favorites.filter((fav) => fav.id !== recipe.id);
+    } else {
+      updatedFavorites = [...favorites, recipe];
+    }
+
+    await updateFav(user.uid, updatedFavorites);
+
     if (isFav) {
       dispatch(removeFavo(recipe));
     } else {
@@ -55,9 +73,9 @@ const Saved = () => {
         <p className="text-gray-500">No saved recipes yet! </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {favorites.map((recipe, i) => (
+          {favorites.map((recipe) => (
             <div
-              key={i}
+              key={recipe.id}
               onClick={() => openRecipe(recipe)}
               className="border rounded-lg shadow hover:shadow-md transition p-4 relative"
             >

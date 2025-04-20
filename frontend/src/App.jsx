@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from './firebase/firebase';
 import RecipeDetail from './pages/RecipeDetail';
+import { getFav } from './firebase/authUtils';
 
 const App = () => {
 
@@ -33,6 +34,8 @@ const App = () => {
               photo: user.photoURL,
               uid: user.uid,
             }));
+            await getFav(user.uid, dispatch);
+            console.log("getFav called with userId:", user.uid); // <-- Add this
           }
         } catch(error) {
           console.log("Error in getting data:" , error);

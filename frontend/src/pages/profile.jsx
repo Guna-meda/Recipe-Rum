@@ -1,57 +1,23 @@
-import { signInWithPopup, signOut, deleteUser, reauthenticateWithPopup } from "firebase/auth";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { auth, provider } from "../firebase/firebase";
-import { clearUser, setUser } from "../redux/features/authSlice";
-import { setDoc, doc, getDoc, deleteDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { login, logout, deleteAccount } from "../firebase/authUtils";
 
 const Profile = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
 
-  const login = async () => {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-
-    const userDoc = doc(db, "users", user.uid);
-    const userDocSnap = await getDoc(userDoc);
-
-    if (!userDocSnap.exists()) {
-      await setDoc(userDoc, {
-        name: user.displayName,
-        email: user.email,
-        photo: user.photoURL,
-        createdAt: new Date().toISOString(),
-      });
-    }
-
-    dispatch(
-      setUser({
-        name: user.displayName,
-        email: user.email,
-        photo: user.photoURL,
-      })
-    );
+  const handleLogin = async () => {
+    await login(dispatch); 
   };
 
-  const logout = () => {
-    signOut(auth);
-    dispatch(clearUser());
+  const handleLogout = () => {
+    logout(dispatch); 
   };
 
-  const deleteAccount = async () => {
-    const currentUser = auth.currentUser;
-    try {
-      await reauthenticateWithPopup(currentUser, provider);
-      await deleteDoc(doc(db, "users", currentUser.uid));
-      await deleteUser(currentUser);
-      dispatch(clearUser());
-    } catch (error) {
-      console.error("Error deleting account:", error);
-      alert("Could not delete account. Please try again.");
-    }
+  const handleDeleteAccount = async () => {
+    await deleteAccount(dispatch); 
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-100 via-lime-50 to-yellow-50 px-4">
@@ -61,7 +27,7 @@ const Profile = () => {
             <h1 className="text-2xl font-semibold mb-4 text-gray-800">Welcome, Chef! 👨‍🍳</h1>
             <p className="text-gray-600 mb-6">Sign in to save your favorite recipes and manage your kitchen journey.</p>
             <button
-              onClick={login}
+              onClick={handleLogin}
               className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full transition duration-300"
             >
               Sign In with Google
@@ -79,13 +45,13 @@ const Profile = () => {
 
             <div className="flex flex-col gap-3">
               <button
-                onClick={logout}
+                onClick={handleLogout}
                 className="bg-red-500 hover:bg-red-600 text-white py-2 rounded-full transition duration-300"
               >
                 Logout
               </button>
               <button
-                onClick={deleteAccount}
+                onClick={handleDeleteAccount}
                 className="bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-full transition duration-300"
               >
                 Delete My Account
